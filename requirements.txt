@@ -1,0 +1,5 @@
+numpy
+pydicom
+scikit-image
+trimesh
+tensorflow

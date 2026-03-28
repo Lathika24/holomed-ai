@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>HoloMed Viewer</title>
+  <style>
+    body { margin: 0; overflow: hidden; background: #f5f7fa; } /* light background */
+  </style>
+</head>
+<body>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+
+<script>
+  const scene = new THREE.Scene();
+
+  const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
+  camera.position.set(0, 0, 8);
+
+  const renderer = new THREE.WebGLRenderer({ antialias: true });
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  renderer.setClearColor(0xf5f7fa); // light background
+  document.body.appendChild(renderer.domElement);
+
+  const controls = new THREE.OrbitControls(camera, renderer.domElement);
+
+  // 💡 LIGHTING (soft + realistic)
+  const ambientLight = new THREE.AmbientLight(0xffffff, 1.2);
+  scene.add(ambientLight);
+
+  const directionalLight = new THREE.DirectionalLight(0xffffff, 1.5);
+  directionalLight.position.set(5, 5, 5);
+  scene.add(directionalLight);
+
+  const loader = new THREE.GLTFLoader();
+
+  // 🧠 LOAD BRAIN
+  loader.load('output/brain.glb', function(gltf) {
+    const brain = gltf.scene;
+
+    brain.scale.set(4, 4, 4);
+
+    brain.traverse((child) => {
+        if (child.isMesh) {
+            child.material.color.set(0xd9d9d9);  // soft gray
+            child.material.transparent = true;
+            child.material.opacity = 0.4;        // 🔥 KEY (see inside)
+            child.material.depthWrite = false;   // 🔥 IMPORTANT
+        }
+    });
+    scene.add(brain);
+  });
+
+  // 🔴 LOAD TUMOR
+  loader.load('output/tumor.glb', function(gltf) {
+    const tumor = gltf.scene;
+
+    tumor.scale.set(4, 4, 4);
+
+    tumor.traverse((child) => {
+        if (child.isMesh) {
+            child.material.color.set(0xff0000);
+            child.material.emissive = new THREE.Color(0xff0000);
+            child.material.emissiveIntensity = 1.2;
+
+            child.material.depthTest = false; // 🔥 ALWAYS VISIBLE
+        }
+    });
+
+    scene.add(tumor);
+  });
+
+  function animate() {
+    requestAnimationFrame(animate);
+    controls.update();
+    renderer.render(scene, camera);
+  }
+
+  animate();
+</script>
+
+</body>
+</html>
