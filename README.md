@@ -59,14 +59,7 @@ http://localhost:8000/viewer.html
 
 ## 📁 Project Structure
 
-holomed-ai/
-│── main.py
-│── viewer.html
-│── requirements.txt
-│── model/
-│── data/ (not included)
-│── output/ (generated files)
-│── README.md
+<img width="436" height="374" alt="image" src="https://github.com/user-attachments/assets/87a36880-f798-47f7-8364-cc17e5965a7a" />
 
 ---
 
@@ -76,5 +69,3 @@ holomed-ai/
 * Model file (model.h5) is not uploaded due to GitHub size limits.
 * Place required files locally before running the project.
 
-
-(Add screenshots here for better presentation)
